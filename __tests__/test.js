@@ -9,16 +9,33 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 // const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-let pathToFile1;
-let pathToFile2;
+let pathToJsonFile1;
+let pathToJsonFile2;
+
+let pathToYmlFile1;
+let pathToYmlFile2;
 
 beforeAll(() => {
-  pathToFile1 = getFixturePath('file1.json');
-  pathToFile2 = getFixturePath('file2.json');
+  pathToJsonFile1 = getFixturePath('file1.json');
+  pathToJsonFile2 = getFixturePath('file2.json');
+
+  pathToYmlFile1 = getFixturePath('file1.yml');
+  pathToYmlFile2 = getFixturePath('file2.yml');
 });
 
-test('step 1, simple tree', () => {
-  expect(gendiff(pathToFile1, pathToFile2)).toBe(`
+test('step 1, simple tree, json', () => {
+  expect(gendiff(pathToJsonFile1, pathToJsonFile2)).toBe(`
+{
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}`);
+});
+test('step 2, simple tree, yml', () => {
+  expect(gendiff(pathToYmlFile1, pathToYmlFile2)).toBe(`
 {
   - follow: false
     host: hexlet.io
