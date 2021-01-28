@@ -26,3 +26,6 @@ jobs:
 
     - name: Eslint
       run: make lint
+    
+    - name: tests
+      run: make test
