@@ -11,3 +11,8 @@ gendiff <pathToFile1> <pathToFile2>
 
 ## .yml
 [![asciicast](https://asciinema.org/a/aYh0JWp3VnfCw7FB2YYMXSbaE.svg)](https://asciinema.org/a/aYh0JWp3VnfCw7FB2YYMXSbaE)
+
+```
+gendiff -f stylish <pathToFile1> <pathToFile2>
+```
+[![asciicast](https://asciinema.org/a/1RP8hEg74Yh8N3YuEJlQqVoM6.svg)](https://asciinema.org/a/1RP8hEg74Yh8N3YuEJlQqVoM6)
