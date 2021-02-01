@@ -28,8 +28,7 @@ const displayProps = (key, value, status) => {
 };
 
 const createDiff = (file1, file2 = {}) => {
-  const allKeys = unionKeys(file1, file2)
-    .sort((a, b) => a.localeCompare(b));
+  const allKeys = _.sortBy(unionKeys(file1, file2));
 
   const result = _.uniq(allKeys).map((key) => {
     if (isRemoved(file1, file2, key)) {
