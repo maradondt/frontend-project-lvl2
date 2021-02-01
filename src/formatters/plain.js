@@ -1,34 +1,38 @@
-import _ from 'lodash';
-
 // eslint-disable-next-line no-nested-ternary
-const displayValue = (value) => (_.isObject(value)
-  ? '[complex value]'
-  : (typeof value === 'string'
-    ? `'${value}'`
-    : value));
+const displayValue = (value) => (typeof value === 'string'
+  ? `'${value}'`
+  : value);
 
 const createString = ({
   key,
   value,
-  newValue,
+  oldValue,
   status,
+  childrens,
+  oldChildrens,
 }, path = null) => {
   const newPath = (path === null)
     ? key
     : `${path}.${key}`;
+  const currentValue = childrens
+    ? '[complex value]'
+    : displayValue(value);
+  const currentOldValue = oldChildrens
+    ? '[complex value]'
+    : displayValue(oldValue);
   switch (status) {
     case ('ADDED'):
-      return `Property '${newPath}' was added with value: ${displayValue(value)}`;
+      return `Property '${newPath}' was added with value: ${currentValue}`;
     case ('REMOVED'):
       return `Property '${newPath}' was removed`;
     case ('CHANGED'):
-      return `Property '${newPath}' was updated. From ${displayValue(value)} to ${displayValue(newValue)}`;
+      return `Property '${newPath}' was updated. From ${currentOldValue} to ${currentValue}`;
     case ('EQUAL'):
       break;
-    case ('OBJECT'):
-      return value
-        .map((item) => (createString(item, newPath)))
-        .filter((item) => !!item)
+    case ('UPDATED'):
+      return childrens
+        .map((child) => (createString(child, newPath)))
+        .filter((child) => !!child)
         .join('\n');
     default:
       throw new Error('plain output is failed');

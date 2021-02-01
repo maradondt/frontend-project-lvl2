@@ -1,17 +1,20 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
+import fs from 'fs';
 import gendiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-
-test('step 1, deep tree, json', () => {
-  const pathToFile1 = getFixturePath('deepfile1.json');
-  const pathToFile2 = getFixturePath('deepfile2.json');
-  const stylishDiff = gendiff(pathToFile1, pathToFile2);
-  expect(stylishDiff).toBe(`{
+// path's
+const pathToFileJson1 = getFixturePath('deepfile1.json');
+const pathToFileJson2 = getFixturePath('deepfile2.json');
+const pathToFileYml1 = getFixturePath('deepfile1.yml');
+const pathToFileYml2 = getFixturePath('deepfile2.yml');
+const pathToJsonResult = getFixturePath('result.json');
+// result's
+const stylishResult = `{
     common: {
       + follow: false
         setting1: Value 1
@@ -54,60 +57,8 @@ test('step 1, deep tree, json', () => {
             }
         }
     }
-}`);
-});
-
-test('step 2, deep tree, yml', () => {
-  const pathToFile1 = getFixturePath('deepfile1.yml');
-  const pathToFile2 = getFixturePath('deepfile2.yml');
-  const stylishDiff = gendiff(pathToFile1, pathToFile2);
-  expect(stylishDiff).toBe(`{
-    common: {
-      + follow: false
-        setting1: Value 1
-      - setting2: 200
-      - setting3: true
-      + setting3: null
-      + setting4: blah blah
-      + setting5: {
-            key5: value5
-        }
-        setting6: {
-            doge: {
-              - wow: 
-              + wow: so much
-            }
-            key: value
-          + ops: vops
-        }
-    }
-    group1: {
-      - baz: bas
-      + baz: bars
-        foo: bar
-      - nest: {
-            key: value
-        }
-      + nest: str
-    }
-  - group2: {
-        abc: 12345
-        deep: {
-            id: 45
-        }
-    }
-  + group3: {
-        fee: 100500
-        deep: {
-            id: {
-                number: 45
-            }
-        }
-    }
-}`);
-});
-test('step 3, format plain', () => {
-  const output = `Property 'common.follow' was added with value: false
+}`;
+const plainOutput = `Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
 Property 'common.setting4' was added with value: 'blah blah'
@@ -118,14 +69,29 @@ Property 'group1.baz' was updated. From 'bas' to 'bars'
 Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]`;
-  const pathToFile1 = getFixturePath('deepfile1.yml');
-  const pathToFile2 = getFixturePath('deepfile2.yml');
-  const stylishDiff = gendiff(pathToFile1, pathToFile2, 'plain');
 
-  const pathToFile3 = getFixturePath('deepfile1.json');
-  const pathToFile4 = getFixturePath('deepfile2.json');
-  const stylishDiff1 = gendiff(pathToFile3, pathToFile4, 'plain');
+const jsonOutput = fs.readFileSync(pathToJsonResult, 'utf-8');
 
-  expect(stylishDiff).toBe(output);
-  expect(stylishDiff1).toBe(output);
+test('step 1, deep tree, json', () => {
+  const stylishDiff = gendiff(pathToFileJson1, pathToFileJson2);
+  expect(stylishDiff).toBe(stylishResult);
+});
+
+test('step 2, deep tree, yml', () => {
+  const stylishDiff = gendiff(pathToFileYml1, pathToFileYml2);
+  expect(stylishDiff).toBe(stylishResult);
+});
+test('step 3, format plain', () => {
+  const stylishDiff = gendiff(pathToFileJson1, pathToFileJson2, 'plain');
+  const stylishDiff1 = gendiff(pathToFileYml1, pathToFileYml2, 'plain');
+
+  expect(stylishDiff).toBe(plainOutput);
+  expect(stylishDiff1).toBe(plainOutput);
+});
+
+test('step 4, format JSON', () => {
+  const stylishDiff = gendiff(pathToFileJson1, pathToFileJson2, 'json');
+  const stylishDiff1 = gendiff(pathToFileYml1, pathToFileYml2, 'json');
+  expect(stylishDiff).toBe(jsonOutput);
+  expect(stylishDiff1).toBe(jsonOutput);
 });
