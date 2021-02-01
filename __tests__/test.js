@@ -106,3 +106,26 @@ test('step 2, deep tree, yml', () => {
     }
 }`);
 });
+test('step 3, format plain', () => {
+  const output = `Property 'common.follow' was added with value: false
+Property 'common.setting2' was removed
+Property 'common.setting3' was updated. From true to null
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was updated. From 'bas' to 'bars'
+Property 'group1.nest' was updated. From [complex value] to 'str'
+Property 'group2' was removed
+Property 'group3' was added with value: [complex value]`;
+  const pathToFile1 = getFixturePath('deepfile1.yml');
+  const pathToFile2 = getFixturePath('deepfile2.yml');
+  const stylishDiff = gendiff(pathToFile1, pathToFile2, 'plain');
+
+  const pathToFile3 = getFixturePath('deepfile1.json');
+  const pathToFile4 = getFixturePath('deepfile2.json');
+  const stylishDiff1 = gendiff(pathToFile3, pathToFile4, 'plain');
+
+  expect(stylishDiff).toBe(output);
+  expect(stylishDiff1).toBe(output);
+});

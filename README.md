@@ -16,3 +16,7 @@ gendiff <pathToFile1> <pathToFile2>
 gendiff -f stylish <pathToFile1> <pathToFile2>
 ```
 [![asciicast](https://asciinema.org/a/1RP8hEg74Yh8N3YuEJlQqVoM6.svg)](https://asciinema.org/a/1RP8hEg74Yh8N3YuEJlQqVoM6)
+```
+gendiff -f plain <pathToFile1> <pathToFile2>
+```
+[![asciicast](https://asciinema.org/a/xZpawV6MkQc6FWZiq2PglJy0q.svg)](https://asciinema.org/a/xZpawV6MkQc6FWZiq2PglJy0q)
