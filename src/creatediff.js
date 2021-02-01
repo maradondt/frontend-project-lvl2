@@ -17,18 +17,10 @@ const createDiff = (file1, file2 = {}) => {
 
   const result = _.uniq(allKeys).map((key) => {
     if (isRemoved(file1, file2, key)) {
-      return {
-        status: 'REMOVED',
-        key,
-        value: file1[key],
-      };
+      return { status: 'REMOVED', key, value: file1[key] };
     }
     if (isAdded(file1, file2, key)) {
-      return {
-        status: 'ADDED',
-        key,
-        value: file2[key],
-      };
+      return { status: 'ADDED', key, value: file2[key] };
     }
     if (isEqual(file1, file2, key)
         && isNotObject(file1[key])
@@ -38,12 +30,8 @@ const createDiff = (file1, file2 = {}) => {
     if (_.isObject(file1[key]) && _.isObject(file2[key])) {
       return { status: 'OBJECT', key, value: createDiff(file1[key], file2[key]) };
     }
-    return {
-      status: 'CHANGED',
-      key,
-      value: file1[key],
-      newValue: file2[key],
-    };
+    // eslint-disable-next-line object-curly-newline
+    return { status: 'CHANGED', key, value: file1[key], newValue: file2[key] };
   });
   return result;
 };
