@@ -1,8 +1,8 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 
-const displayObject = (obj, sep, depth) => `{\n${Object.entries(obj)
-  .map(([key, value]) => (_.isObject(value)
-    ? `${sep.repeat(depth + 1)}${key}: ${displayObject(value, sep, depth + 1)}`
+const displayChildrens = (childrens, sep, depth) => `{\n${childrens
+  .map(({ key, value, childrens: childs }) => (childs
+    ? `${sep.repeat(depth + 1)}${key}: ${displayChildrens(childs, sep, depth + 1)}`
     : `${sep.repeat(depth + 1)}${key}: ${value}`))
   .join('\n')}\n${sep.repeat(depth)}}`;
 
@@ -10,14 +10,16 @@ const createString = ({
   status,
   key,
   value,
-  newValue,
+  oldValue,
+  childrens,
+  oldChildrens,
 }, sep, depth) => {
-  const currentValue = _.isObject(value)
-    ? displayObject(value, sep, depth + 1)
+  const currentValue = childrens
+    ? displayChildrens(childrens, sep, depth + 1)
     : value;
-  const newCurrentValue = _.isObject(newValue)
-    ? displayObject(newValue, sep, depth + 1)
-    : newValue;
+  const oldCurrentValue = oldChildrens
+    ? displayChildrens(oldChildrens, sep, depth + 1)
+    : oldValue;
   switch (status) {
     case 'EQUAL':
       return `${sep.repeat(depth + 1)}${key}: ${currentValue}`;
@@ -26,9 +28,9 @@ const createString = ({
     case 'REMOVED':
       return `${sep.repeat(depth)}  - ${key}: ${currentValue}`;
     case 'CHANGED':
-      return `${sep.repeat(depth)}  - ${key}: ${currentValue}\n${sep.repeat(depth)}  + ${key}: ${newCurrentValue}`;
-    case 'OBJECT':
-      return `${sep.repeat(depth + 1)}${key}: {\n${value
+      return `${sep.repeat(depth)}  - ${key}: ${oldCurrentValue}\n${sep.repeat(depth)}  + ${key}: ${currentValue}`;
+    case 'UPDATED':
+      return `${sep.repeat(depth + 1)}${key}: {\n${childrens
         .map((item) => createString(item, sep, depth + 1))
         .join('\n')}\n${sep.repeat(depth + 1)}}`;
     default: throw new Error('Creating string is failed');
